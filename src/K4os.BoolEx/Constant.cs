@@ -1,4 +1,5 @@
 ﻿using System;
+using K4os.BoolEx.Internal;
 
 namespace K4os.BoolEx
 {
@@ -9,18 +10,23 @@ namespace K4os.BoolEx
 		public static readonly Constant True = new Constant(true);
 		public static readonly Constant False = new Constant(false);
 
-		public static bool IsTrue(Expression e) => e is Constant c && c.Value;
-		public static bool IsFalse(Expression e) => e is Constant c && !c.Value;
-
 		private Constant(bool value) { Value = value; }
 
-		public override string ToString() => Value.ToString();
-		public override int GetHashCode() => Value.GetHashCode();
+		public static bool IsTrue(Expression e) => e is Constant c && c.Value;
+		public static bool IsFalse(Expression e) => e is Constant c && !c.Value;
+		
+		public static Expression Negate(Constant constant) => constant.Value ? False : True;
 
-		// ReSharper disable once PossibleNullReferenceException
+		public static Expression Create(bool value) => value ? True : False;
+
 		public bool Equals(Constant other) =>
-			this.MaybeEqual(other) ?? Value.Equals(other.Value);
+			!ReferenceEquals(null, other) &&
+			(ReferenceEquals(this, other) || Value == other.Value);
 
-		public override bool Equals(object other) => this.EqualsForEquatable(other);
+		public override bool Equals(object obj) => this.EqualsForEquatable(obj);
+
+		public override int GetHashCode() => Value.GetHashCode();
+		
+		public override string ToString() => Value.ToString();
 	}
 }

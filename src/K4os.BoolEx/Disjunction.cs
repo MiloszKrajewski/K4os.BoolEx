@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using K4os.BoolEx.Internal;
 
 namespace K4os.BoolEx
 {
-	public class Disjunction: Expression
+	public class Disjunction: Composite, IEquatable<Disjunction>
 	{
-		public IEnumerable<Expression> Inner { get; }
-		private Disjunction(IEnumerable<Expression> inner) => Inner = inner;
+		private Disjunction(IEnumerable<Expression> expressions):
+			base(expressions.ToArray()) { }
+
+		public static Expression Create(Expression a, Expression b) => Create(new[] { a, b });
+		public static Expression Create(params Expression[] e) => Create(e.AsEnumerable());
+		public static Expression Create(IEnumerable<Expression> expressions) =>
+			Combine(expressions, x => new Disjunction(x), true);
+
+		public static IEnumerable<Expression> Flatten(Expression e) =>
+			Composite.Flatten<Disjunction>(e);
 
 		public override string ToString() =>
 			$"({string.Join(" | ", Inner.Select(x => x.ToString()))})";
 
-		public static Expression Create(Expression a, Expression b) => Create(new[] { a, b });
-		public static Expression Create(params Expression[] e) => Create(e.AsEnumerable());
+		public bool Equals(Disjunction other) =>
+			!ReferenceEquals(null, other) && (
+				ReferenceEquals(this, other) ||
+				GetHashCode() == other.GetHashCode() && Inner.EqualSets(other.Inner)
+			);
 
-		public static Expression Create(IEnumerable<Expression> expressions)
-		{
-			var inner = expressions.SelectMany(Flatten).Distinct().ToArray();
+		public override bool Equals(object obj) => this.EqualsForEquatable(obj);
 
-			var anyTrue = inner.Any(Constant.IsTrue);
-			if (anyTrue) return Constant.True;
-			
-			var allFalse = inner.All(Constant.IsFalse);
-			if (allFalse) return Constant.False;
-
-			return
-				inner.Length <= 0 ? throw new ArgumentException("Empty disjunction is not allowed") :
-				inner.Length == 1 ? inner[0] :
-				new Disjunction(inner.Where(e => !(e is Constant)));
-		}
-
-		public static IEnumerable<Expression> Flatten(Expression e) =>
-			e is Disjunction d ? d.Inner.SelectMany(Flatten) : new[] { e };
+		public override int GetHashCode() => HashCode;
 	}
 }

@@ -1,35 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using K4os.BoolEx.Internal;
 
 namespace K4os.BoolEx
 {
-	public class Conjunction: Expression
+	public class Conjunction: Composite, IEquatable<Conjunction>
 	{
-		public IEnumerable<Expression> Inner { get; }
-		private Conjunction(IEnumerable<Expression> e) => Inner = e;
-		public override string ToString() => $"({string.Join(" & ", Inner.Select(x => x.ToString()))})";
+		private Conjunction(IEnumerable<Expression> expressions): 
+			base(expressions.ToArray()) { }
 
 		public static Expression Create(Expression a, Expression b) => Create(new[] { a, b });
 		public static Expression Create(params Expression[] e) => Create(e.AsEnumerable());
 
-		public static Expression Create(IEnumerable<Expression> expressions)
-		{
-			var inner = expressions.SelectMany(Flatten).Distinct().ToArray();
-			
-			var anyFalse = inner.Any(Constant.IsFalse);
-			if (anyFalse) return Constant.False;
-			
-			var allTrue = inner.All(Constant.IsTrue);
-			if (allTrue) return Constant.True;
-			
-			return
-				inner.Length <= 0 ? throw new ArgumentException("Empty conjunction is not allowed") :
-				inner.Length == 1 ? inner[0] :
-				new Conjunction(inner.Where(e => !(e is Constant)));
-		}
-
+		public static Expression Create(IEnumerable<Expression> expressions) =>
+			Combine(expressions, x => new Conjunction(x), false);
+		
 		public static IEnumerable<Expression> Flatten(Expression e) =>
-			e is Conjunction c ? c.Inner.SelectMany(Flatten) : new[] { e };
+			Composite.Flatten<Conjunction>(e);
+
+		public override string ToString() =>
+			$"({string.Join(" & ", Inner.Select(x => x.ToString()))})";
+
+		public bool Equals(Conjunction other) =>
+			!ReferenceEquals(null, other) && (
+				ReferenceEquals(this, other) ||
+				GetHashCode() == other.GetHashCode() && Inner.EqualSets(other.Inner)
+			);
+
+		public override bool Equals(object obj) => this.EqualsForEquatable(obj);
+
+		public override int GetHashCode() => HashCode;
 	}
 }

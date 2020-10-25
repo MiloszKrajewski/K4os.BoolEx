@@ -22,7 +22,7 @@ namespace K4os.BoolEx.Test
 			switch (e)
 			{
 				case Constant v: return $"{v.Value}";
-				case Symbol v: return $"{v.Name}";
+				case Symbol v: return $"{v.Value}";
 				case Negation n: return $"~{Explain(n.Inner)}";
 				case Disjunction d: return $"({string.Join("|", d.Inner.Select(Explain))})";
 				case Conjunction c: return $"({string.Join("&", c.Inner.Select(Explain))})";
@@ -33,7 +33,7 @@ namespace K4os.BoolEx.Test
 		private static string ExplainDNF(string[][] c) => // magic :-)
 			$"({string.Join("|", c.Select(d => $"({string.Join("&", d)})"))})";
 
-		private static string ExplainDNF(CanonicalResult<string> c) => // magic :-)
+		private static string ExplainDNF(Canonical.Result<string> c) => // magic :-)
 			c.Expression != null
 				? ExplainDNF(c.Expression)
 				: $"({c.Constant ?? throw new ArgumentException()})";
@@ -170,7 +170,7 @@ namespace K4os.BoolEx.Test
 		public void WhenUsingDNF_ThenCanonicalDNFProducesSameResult()
 		{
 			var x = (A | B) & (C | (D & ~(~E & ~F)));
-			var y = ExplainDNF(x.CanonicalDNF<string, string>((i, v) => $"{(i ? "~" : "")}{v}"));
+			var y = ExplainDNF(Canonical.DNF(x, (i, v) => $"{(i ? "~" : "")}{v}"));
 			Assert.Equal("((A&C)|(A&D&E)|(A&D&F)|(B&C)|(B&D&E)|(B&D&F))", y);
 		}
 
@@ -183,6 +183,29 @@ namespace K4os.BoolEx.Test
 			Assert.False(Opposite(A, A));
 			Assert.False(Opposite(A, B));
 			Assert.False(Opposite(~A, ~B));
+		}
+		
+		[Fact]
+		public void WhenConstantIsNegated_ThenResultIsStillConstant()
+		{
+			var t = Constant.Create(true);
+			var f = Constant.False;
+
+			Assert.Equal(~t, f);
+			Assert.Equal(~f, t);
+		}
+		
+		[Fact]
+		public void WhenCombiningIdenticalSubexpressions_ThenTheyGetCollapsed()
+		{
+			var x = A & B & C;
+			var y = C & A & B;
+			
+			Assert.Equal(x & y, A & B & C);
+			Assert.Equal(x & y, C & B & A);
+			Assert.Equal(x | y, B & A & C);
+			Assert.Equal((x | y) & (x & y), B & A & C);
+			Assert.Equal((x | y) | (x | y), B & A & C);
 		}
 	}
 }

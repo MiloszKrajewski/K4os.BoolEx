@@ -1,23 +1,30 @@
 ﻿using System;
+using K4os.BoolEx.Internal;
 
 namespace K4os.BoolEx
 {
 	public class Negation: Expression, IEquatable<Negation>
 	{
 		public Expression Inner { get; }
-		private Negation(Expression e) => Inner = e;
-		public override string ToString() => $"~{Inner}";
+		
+		private Negation(Expression expression) => 
+			Inner = expression.Required(nameof(expression));
 
-		public static Expression Create(Expression e) => e is Negation n ? n.Inner : new Negation(e);
+		public static Expression Create(Expression e) => 
+			e switch {
+				Negation n => n.Inner,
+				Constant c => Constant.Negate(c),
+				_ => new Negation(e)
+			};
 
 		public bool Equals(Negation other) =>
-			!(other is null) && (
-				ReferenceEquals(this, other) || Equals(Inner, other.Inner));
+			!ReferenceEquals(null, other) && 
+			(ReferenceEquals(this, other) || Equals(Inner, other.Inner));
 
-		public override bool Equals(object other) =>
-			!(other is null) && (
-				ReferenceEquals(this, other) || other.GetType() == GetType() && Equals((Negation) other));
-
-		public override int GetHashCode() => Inner != null ? Inner.GetHashCode() : 0;
+		public override bool Equals(object obj) => this.EqualsForEquatable(obj);
+		
+		public override int GetHashCode() => -Inner.GetHashCode();
+		
+		public override string ToString() => $"~{Inner}";
 	}
 }
