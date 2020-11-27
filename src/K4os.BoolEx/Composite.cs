@@ -18,8 +18,8 @@ namespace K4os.BoolEx
 
 		protected static Expression Combine<T>(
 			IEnumerable<Expression> expressions,
-			Func<IEnumerable<Expression>, T> materialize,
-			bool shortCircuit)
+			bool shortCircuit,
+			Func<IEnumerable<Expression>, T> materialize)
 			where T: Composite
 		{
 			var candidates = expressions.SelectMany(Flatten<T>);

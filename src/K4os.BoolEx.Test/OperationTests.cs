@@ -118,7 +118,7 @@ namespace K4os.BoolEx.Test
 			var x = (A | B) & (C | (D & (E | F)));
 			Assert.Equal("((A&C)|(A&D&E)|(A&D&F)|(B&C)|(B&D&E)|(B&D&F))", Explain(x.DNF()));
 		}
-
+		
 		[Fact]
 		public void WhenUsingConstants_ThenTheyGetOptimized()
 		{

@@ -13,7 +13,7 @@ namespace K4os.BoolEx
 		public static Expression Create(Expression a, Expression b) => Create(new[] { a, b });
 		public static Expression Create(params Expression[] e) => Create(e.AsEnumerable());
 		public static Expression Create(IEnumerable<Expression> expressions) =>
-			Combine(expressions, x => new Disjunction(x), true);
+			Combine(expressions, true, x => new Disjunction(x));
 
 		public static IEnumerable<Expression> Flatten(Expression e) =>
 			Composite.Flatten<Disjunction>(e);
