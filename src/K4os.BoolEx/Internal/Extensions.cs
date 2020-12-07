@@ -7,10 +7,10 @@ namespace K4os.BoolEx.Internal
 {
 	public static class Extensions
 	{
-		public static T Required<T>(this T value, string name = null) =>
+		public static T Required<T>(this T value, string? name = null) =>
 			value ?? throw new ArgumentNullException(name ?? "<expression>");
 
-		public static bool EqualsForEquatable<T>(this T subject, object other)
+		public static bool EqualsForEquatable<T>(this T subject, object? other)
 			where T: IEquatable<T> =>
 			!ReferenceEquals(null, other) && (
 				ReferenceEquals(subject, other) ||
@@ -28,7 +28,9 @@ namespace K4os.BoolEx.Internal
 		public static bool IsEmpty<T>(this IEnumerable<T> sequence) =>
 			sequence is ICollection collection ? collection.Count <= 0 : !sequence.Any();
 
-		public static T[] AsArray<T>(this IEnumerable<T> sequence, bool allowNull = false) =>
+		public static T[] AsArray<T>(this IEnumerable<T>? sequence) => AsArray(sequence, false)!;
+		
+		public static T[]? AsArray<T>(this IEnumerable<T>? sequence, bool allowNull) =>
 			sequence is null ? allowNull ? null : Array.Empty<T>() :
 			sequence is T[] array ? array :
 			sequence.ToArray();

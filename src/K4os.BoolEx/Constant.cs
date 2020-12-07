@@ -7,8 +7,8 @@ namespace K4os.BoolEx
 	{
 		public bool Value { get; }
 
-		public static readonly Constant True = new Constant(true);
-		public static readonly Constant False = new Constant(false);
+		public new static readonly Constant True = new Constant(true);
+		public new static readonly Constant False = new Constant(false);
 
 		private Constant(bool value) { Value = value; }
 
@@ -19,11 +19,11 @@ namespace K4os.BoolEx
 
 		public static Expression Create(bool value) => value ? True : False;
 
-		public bool Equals(Constant other) =>
+		public bool Equals(Constant? other) =>
 			!ReferenceEquals(null, other) &&
 			(ReferenceEquals(this, other) || Value == other.Value);
 
-		public override bool Equals(object obj) => this.EqualsForEquatable(obj);
+		public override bool Equals(object? obj) => this.EqualsForEquatable(obj);
 
 		public override int GetHashCode() => Value.GetHashCode();
 		

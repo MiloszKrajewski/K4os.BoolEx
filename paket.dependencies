@@ -6,6 +6,9 @@ nuget Microsoft.Extensions.DependencyInjection
 nuget Microsoft.Extensions.DependencyInjection.Abstractions
 nuget Microsoft.Extensions.Logging
 nuget Microsoft.Extensions.Logging.Abstractions
+nuget Microsoft.Extensions.Primitives
+
+nuget Sprache
 
 nuget System.Reactive
 nuget System.Interactive

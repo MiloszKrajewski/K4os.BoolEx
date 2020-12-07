@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeCode>true</AllowUnsafeCode>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\K4os.BoolEx.Parsing\K4os.BoolEx.Parsing.csproj" />
     <ProjectReference Include="..\K4os.BoolEx\K4os.BoolEx.csproj" />
   </ItemGroup>
-  <Import Project="..\..\Common.targets" />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

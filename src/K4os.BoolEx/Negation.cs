@@ -17,7 +17,7 @@ namespace K4os.BoolEx
 				_ => new Negation(e)
 			};
 
-		public bool Equals(Negation other) =>
+		public bool Equals(Negation? other) =>
 			!ReferenceEquals(null, other) && 
 			(ReferenceEquals(this, other) || Equals(Inner, other.Inner));
 

@@ -19,5 +19,11 @@ namespace K4os.BoolEx
 			Disjunction.Create(sequence);
 		public static Expression Or(params Expression[] sequence) => 
 			Disjunction.Create(sequence);
+		
+		public static Expression True => Constant.True;
+		public static Expression False => Constant.False;
+		public static Expression Const(bool value) => Constant.Create(value);
+		public static Expression Ident<T>(T value) => Symbol.Create(value);
+
 	}
 }

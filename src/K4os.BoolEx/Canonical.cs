@@ -8,7 +8,7 @@ namespace K4os.BoolEx
 	public static class Canonical
 	{
 		public static Result<T> DNF<T>(
-			Expression expression, Func<bool, object, T> adapter)
+			Expression expression, Func<bool, object?, T> adapter)
 		{
 			T AsSymbol(Expression e, bool invert = false) =>
 				e is Symbol s ? adapter(invert, s.Value) : throw SymbolExpected(e);
@@ -30,7 +30,7 @@ namespace K4os.BoolEx
 		}
 
 		public static Result<T> CNF<T>(
-			Expression expression, Func<bool, object, T> adapter)
+			Expression expression, Func<bool, object?, T> adapter)
 		{
 			T AsSymbol(Expression e, bool invert = false) =>
 				e is Symbol s ? adapter(invert, s.Value) : throw SymbolExpected(e);
@@ -54,9 +54,9 @@ namespace K4os.BoolEx
 		public class Result<T>
 		{
 			public bool? Constant { get; }
-			public T[][] Expression { get; }
+			public T[][]? Expression { get; }
 
-			private Result(bool? constant, T[][] expression)
+			private Result(bool? constant, T[][]? expression)
 			{
 				Constant = constant;
 				Expression = expression;
@@ -71,7 +71,7 @@ namespace K4os.BoolEx
 			Expression e, Func<Expression, TData[][]> parser) =>
 			e is Constant c ? new Result<TData>(c.Value) : new Result<TData>(parser(e));
 
-		private static Exception SymbolExpected(Expression e) =>
+		private static Exception SymbolExpected(Expression? e) =>
 			new ArgumentException(
 				$"{nameof(Symbol)} expected but {(e?.GetType().Name ?? "<null>")} found");
 	}

@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{835ECD
 		..\Signing.targets = ..\Signing.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K4os.BoolEx.Parsing", "K4os.BoolEx.Parsing\K4os.BoolEx.Parsing.csproj", "{16BF0250-F609-4C59-BA10-C2520BC4A7A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{D9E9A2A7-0916-447E-A263-83A29F5746A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9E9A2A7-0916-447E-A263-83A29F5746A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9E9A2A7-0916-447E-A263-83A29F5746A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16BF0250-F609-4C59-BA10-C2520BC4A7A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16BF0250-F609-4C59-BA10-C2520BC4A7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16BF0250-F609-4C59-BA10-C2520BC4A7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16BF0250-F609-4C59-BA10-C2520BC4A7A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
