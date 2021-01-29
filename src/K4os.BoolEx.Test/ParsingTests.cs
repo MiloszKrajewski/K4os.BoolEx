@@ -40,6 +40,12 @@ namespace K4os.BoolEx.Test
 		[InlineData("a|~b&c", "(a | (~b & c))")]
 		[InlineData(" (     a | b ) &    c ", "((a | b) & c)")]
 		[InlineData(" a | ~ b & c", "(a | (~b & c))")]
+		[InlineData(" a|b&c|d", "(a | (b & c) | d)")]
+		[InlineData(" a&b|c&d", "((a & b) | (c & d))")]
+		[InlineData(" a|b&~c|d", "(a | (b & ~c) | d)")]
+		[InlineData(" a&b|~c&d", "((a & b) | (~c & d))")]
+		[InlineData(" a|~(b&c)|d", "(a | ~(b & c) | d)")]
+		[InlineData(" a&~(b|c)&d", "(a & ~(b | c) & d)")]
 		public void ExpressionRoundtrip(string expression, string expected)
 		{
 			var value = Parse(expression);

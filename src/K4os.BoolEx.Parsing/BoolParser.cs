@@ -27,8 +27,8 @@ namespace K4os.BoolEx.Parsing
 
 			var trueParser = Parse.String("true").Token().Return(Expression.True);
 			var falseParser = Parse.String("false").Token().Return(Expression.False);
-			var constantParser = trueParser.Or(falseParser);
 			var identParser = Parse.Regex(IdentRegex).Token().Select(Expression.Ident);
+			var constantParser = trueParser.Or(falseParser);
 			var valueParser = constantParser.Or(identParser);
 
 			var parenParser = (
@@ -44,18 +44,26 @@ namespace K4os.BoolEx.Parsing
 				select ~e
 			).Or(parenParser);
 
+			// var andParser = (
+			// 	from a in notParser
+			// 	from op in Parse.Char('&').Token()
+			// 	from b in anyParser
+			// 	select a & b
+			// ).Or(notParser);
+			
+			// var orParser = (
+			// 	from a in andParser
+			// 	from op in Parse.Char('|').Token()
+			// 	from b in anyParser
+			// 	select a | b
+			// ).Or(andParser);
+			
 			var andParser = (
-				from a in notParser
-				from op in Parse.Char('&').Token()
-				from b in anyParser
-				select a & b
+				Parse.ChainOperator(Parse.Char('&').Token(), notParser, (_, a, b) => a & b)
 			).Or(notParser);
 
 			var orParser = (
-				from a in andParser
-				from op in Parse.Char('|').Token()
-				from b in anyParser
-				select a | b
+				Parse.ChainOperator(Parse.Char('|').Token(), andParser, (_, a, b) => a | b)
 			).Or(andParser);
 
 			anyParserPromise = orParser;
